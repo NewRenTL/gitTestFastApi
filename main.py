@@ -2,7 +2,7 @@ from fastapi import FastAPI
 
 from fastapi.responses import FileResponse
 
-from random import randint
+from random import choice
 
 import os
 
@@ -35,8 +35,11 @@ async def create_upload_file(file:UploadFile = File(...)):
 @app.get("/show/")
 async def read_random_file():
     files = os.listdir(IMAGEDIR)
-    random_index = randint(0,len(files)-1)
 
-    path=f"{IMAGEDIR}{files[random_index]}"
+    if not files:
+        return {"message": "No images available"}
+    
+    random_file = choice(files)
+    path = os.path.join(IMAGEDIR, random_file)
 
     return FileResponse(path)
